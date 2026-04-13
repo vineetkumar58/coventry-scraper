@@ -17,7 +17,7 @@ import re
 import logging
 from typing import Optional
 
-# ── Logging ───────────────────────────────────────────────────────────────────
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s  %(levelname)s  %(message)s",
@@ -25,7 +25,7 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-# ── Constants ─────────────────────────────────────────────────────────────────
+
 BASE_URL        = "https://www.coventry.ac.uk"
 UNIVERSITY_NAME = "Coventry University"
 COUNTRY         = "United Kingdom"
@@ -54,7 +54,7 @@ COURSE_URL_PATTERN = re.compile(
     r"https://www\.coventry\.ac\.uk/course-structure/(ug|pg)/[^/]+/[^/?#]+"
 )
 
-# ── HTTP helper ───────────────────────────────────────────────────────────────
+
 
 def fetch_page(url: str, retries: int = 3, delay: float = 2.0) -> Optional[BeautifulSoup]:
     """Fetch *url* and return a BeautifulSoup, or None after *retries* failures."""
@@ -70,19 +70,10 @@ def fetch_page(url: str, retries: int = 3, delay: float = 2.0) -> Optional[Beaut
     log.error(f"  All {retries} attempts failed for: {url}")
     return None
 
-# ── Step 1 — URL Discovery ────────────────────────────────────────────────────
+
 
 def discover_course_urls(max_courses: int = MAX_COURSES) -> list:
-    """
-    Crawl the official Coventry course listing pages and return up to
-    *max_courses* unique, verified course-page URLs.
-
-    Strategy:
-    1. Fetch each listing page.
-    2. Find all <a href> links matching the course-URL pattern.
-    3. Normalise each URL (strip query params, ensure base URL prefix).
-    4. Deduplicate and return the first *max_courses* valid URLs.
-    """
+    
     discovered = []
     seen = set()
 
@@ -133,7 +124,7 @@ def discover_course_urls(max_courses: int = MAX_COURSES) -> list:
 
     return discovered[:max_courses]
 
-# ── Step 2 — Data Extraction helpers ─────────────────────────────────────────
+
 
 def clean(text):
     """Normalise whitespace; return 'NA' for empty/None."""
@@ -459,6 +450,5 @@ def run_scraper(max_courses=MAX_COURSES, output_file=OUTPUT_FILE):
     log.info("=" * 60)
 
 
-# ── Entry point ───────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     run_scraper()
